@@ -1,0 +1,17 @@
+.mesto__delete{
+    background-image: url(../../../images/delete.svg);
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 19.3px;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    
+}
+
+.mesto__delete:hover{
+    opacity: .6;
+    cursor: pointer;
+}

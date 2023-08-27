@@ -1,0 +1,16 @@
+.mesto__like {
+    background-color: white;
+    background-image: url(../../../images/heard.svg);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 19px;
+    width: 22px;
+    border: 0;
+    align-self: center;
+    
+}
+
+.mesto__like:hover{
+    opacity: .6;
+    cursor: pointer;
+}

@@ -1,0 +1,26 @@
+.profile__button-edit {
+    background-color: #000000;
+    width: 24px;
+    height: 24px;
+    background-image: url(../../../images/redac.svg);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border: 1px solid #ffffff;
+    margin-top: 43px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.profile__button-edit:hover{
+    opacity: .6;
+}
+
+@media screen and (max-width: 660px) {
+
+    .profile__button-edit {
+        width: 18px;
+        height: 18px;
+        margin-left: 0;
+        margin-top: 35px;
+    }
+}
