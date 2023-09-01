@@ -9,8 +9,8 @@
 
 ## Ссылки на проект
 
-IP-адрес x.x.x.x
+IP-адрес 158.160.41.146
 
-Frontend https://...
+Frontend http://korvin.boy.nomoredomainsicu.ru/sign-up
 
-Backend https://...
+Backend https://api.korvin.boy.nomoredomainsicu.ru/
