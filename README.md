@@ -11,6 +11,6 @@
 
 IP-адрес 158.160.41.146
 
-Frontend http://korvin.boy.nomoredomainsicu.ru/sign-up
+Frontend http://korvin.boy.nomoredomainsicu.ru
 
-Backend https://api.korvin.boy.nomoredomainsicu.ru/
+Backend https://api.korvin.boy.nomoredomainsicu.ru
