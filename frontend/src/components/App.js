@@ -35,6 +35,10 @@ export function App() {
   const [email, setEmail] = React.useState('');
   const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(false);
 
+  const resetRegistrationStatus = () => {
+    setRegistrationSuccessful(false);
+  };
+
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
 
@@ -47,59 +51,16 @@ export function App() {
     console.log(isLoggedIn, 'isloggedIn');
   }, [isLoggedIn]);
 
-  // const requestTokenHandler = async () => {
-  //   try {
-  //     const email = "korv.korp@yandex.ru";
-  //     const password = "123456";
-
-  //     const response = await authenticationApi.login(email, password);
-  //     const token = response.token;
-
-  //     console.log("Токен получен:", token);
-  //     return token;
-  //   } catch (error) {
-  //     console.log("Ошибка при получении токена:", error);
-  //   }
-  // };
-
-  // const checkTokenHandler = async () => {
-  //   try {
-  //     const token = await requestTokenHandler(); // Вызываем обработчик для запроса токена
-  //     const data = await authenticationApi.checkToken(token);
-
-  //     console.log("Результат проверки токена:", data);
-  //   } catch (error) {
-  //     console.log("Ошибка при проверке токена:", error);
-  //   }
-  // };
-
-  // checkTokenHandler();
-
   useEffect(() => {
-    setIsLoading(true); // Устанавливаем состояние загрузки в true перед отправкой запроса
-    Promise.all([api.getUserInfo(), api.getInitialCardsData()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData);
-        setCards(cardsData);
-        setIsLoading(false); // Устанавливаем состояние загрузки в false после получения данных
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false); // Устанавливаем состояние загрузки в false в случае ошибки
-      });
-  }, []);
-
-  React.useEffect(() => {
-    const checkTokens = async () => {
+    const checkTokensAndFetchData = async () => {
       const jwt = localStorage.getItem('jwt');
-      console.log(jwt, 'монтирование');
+
       if (jwt) {
         try {
           const res = await authenticationApi.checkToken(jwt);
-          setIsLoggedIn(true);
-          setEmail(res.data.email);
-          redirect('/');
-          console.log('success');
+
+          setEmail(res.email);
+          console.log('Token check success');
         } catch (err) {
           if (err.status === 401) {
             console.log('401 — токен не передан');
@@ -107,10 +68,27 @@ export function App() {
           console.log('401 — токен некорректен', jwt, err);
         }
       }
+
+      setIsLoading(true);
+
+      Promise.all([api.getUserInfo(jwt), api.getInitialCardsData(jwt)])
+        .then(([userData, cardsData]) => {
+          setCurrentUser(userData);
+          setCards(cardsData);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
     };
 
-    checkTokens();
-  }, []);
+    checkTokensAndFetchData();
+
+    if (isLoggedIn === false) {
+      redirect('/sign-in', { replace: true });
+    }
+  }, [isLoggedIn]); // Эффект будет срабатывать при изменении isLoggedIn
 
   function handleSignOut() {
     localStorage.removeItem('jwt');
@@ -124,6 +102,7 @@ export function App() {
       localStorage.setItem('jwt', res.token);
       setIsLoggedIn(true);
       console.log(res.token);
+      console.log('login');
       setEmail(email);
       redirect('/', { replace: true });
     } catch (err) {
@@ -166,40 +145,42 @@ export function App() {
   // }, [isRegistrationSuccessful]);
 
   function handleCardLike(card) {
-    // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const jwt = localStorage.getItem('jwt');
 
-    // Отправляем запрос в API и получаем обновлённые данные карточки
+    const isLiked = card.likes.some((i) => i === currentUser._id);
+
+    console.log(card);
     if (isLiked) {
       api
-        .removeLike(card._id)
+        .removeLike(card._id, jwt)
         .then((newCard) => {
           setCards((state) =>
             state.map((c) => (c._id === card._id ? newCard : c))
           );
         })
         .catch((error) => {
-          // Обработка ошибки при удалении лайка
           console.error('Error removing like:', error);
         });
     } else {
       api
-        .addLike(card._id)
+        .addLike(card._id, jwt)
         .then((newCard) => {
           setCards((state) =>
             state.map((c) => (c._id === card._id ? newCard : c))
           );
         })
         .catch((error) => {
-          // Обработка ошибки при добавлении лайка
           console.error('Error adding like:', error);
         });
     }
   }
 
   function handleCardDelete(card) {
+    const jwt = localStorage.getItem('jwt');
+    console.log(card);
+    console.log(card._id);
     api
-      .removeCard(card._id)
+      .removeCard(card._id, jwt)
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id));
       })
@@ -209,9 +190,11 @@ export function App() {
   }
 
   function handleUpdateUser(userData) {
+    const jwt = localStorage.getItem('jwt');
+    console.log(userData);
     setIsLoading(true); // Устанавливаем состояние загрузки в true перед отправкой запроса
     api
-      .editProfileInfo(userData)
+      .editProfileInfo(userData, jwt)
       .then((updatedUser) => {
         setCurrentUser(updatedUser);
         closeAllPopups();
@@ -224,9 +207,10 @@ export function App() {
   }
 
   function handleUpdateAvatar(newAvatar) {
+    const jwt = localStorage.getItem('jwt');
     setIsLoading(true); // Устанавливаем состояние загрузки в true перед отправкой запроса
     api
-      .updateProfileUserAvatar(newAvatar)
+      .updateProfileUserAvatar(newAvatar, jwt)
       .then((updatedUser) => {
         setCurrentUser(updatedUser);
         closeAllPopups();
@@ -239,9 +223,10 @@ export function App() {
   }
 
   function handleAddPlaceSubmit(newCard, setError) {
+    const jwt = localStorage.getItem('jwt');
     setIsLoading(true); // Set loading state to true before sending the request
     api
-      .addNewCard(newCard)
+      .addNewCard(newCard, jwt)
       .then((addedCard) => {
         setCards([addedCard, ...cards]);
         closeAllPopups();
@@ -324,6 +309,7 @@ export function App() {
                 <Register
                   onRegistration={registerSubmit}
                   isRegistrationSuccessful={isRegistrationSuccessful}
+                  resetRegistrationStatus={resetRegistrationStatus}
                   redirect={redirect}
                   replace
                 />
@@ -331,7 +317,13 @@ export function App() {
             />
             <Route
               path='/sign-in'
-              element={<Login onLogin={loginSubmit} replace />}
+              element={
+                <Login
+                  onLogin={loginSubmit}
+                  replace
+                  resetRegistrationStatus={resetRegistrationStatus}
+                />
+              }
             />
           </Routes>
         </BrowserRouter>

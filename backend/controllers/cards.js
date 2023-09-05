@@ -25,8 +25,8 @@ module.exports.createCard = (req, res, next) => {
       if (error.name === 'ValidationError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при создании карточки'
-          )
+            'Переданы некорректные данные при создании карточки',
+          ),
         );
       }
       return next(error);
@@ -36,10 +36,12 @@ module.exports.createCard = (req, res, next) => {
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
 module.exports.deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
+  const { authorization: bearerToken } = req.headers;
+  const token = bearerToken.replace('Bearer ', '');
 
-  const { token } = req.cookies;
   const payload = jwt.decode(token);
-  const currentUser = await User.findById(payload); // Get the ID of the current user
+
+  const currentUser = await User.findById(payload._id); // Get the ID of the current user
 
   try {
     const card = await Card.findById(cardId);
@@ -101,7 +103,8 @@ module.exports.deleteCard = async (req, res, next) => {
 
 module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
-  const { userId } = req.user;
+  console.log(req.user._id);
+  const userId = req.user._id;
 
   Card.findByIdAndUpdate(
     cardId,
@@ -112,7 +115,7 @@ module.exports.likeCard = (req, res, next) => {
     },
     {
       new: true,
-    }
+    },
   )
     .then((card) => {
       if (card) return res.send(card);
@@ -123,8 +126,8 @@ module.exports.likeCard = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(
           new InvalidRequst(
-            'Переданы некорректные данные при добавлении лайка карточке'
-          )
+            'Переданы некорректные данные при добавлении лайка карточке',
+          ),
         );
       } else {
         next(err);
@@ -136,12 +139,12 @@ module.exports.likeCard = (req, res, next) => {
 module.exports.dislikeCard = async (req, res, next) => {
   const { cardId } = req.params;
 
-  const { userId } = req.user;
+  const userId = req.user._id;
   try {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: userId } },
-      { new: true }
+      { new: true },
     );
 
     if (!card) {
@@ -153,8 +156,8 @@ module.exports.dislikeCard = async (req, res, next) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return next(
         new InvalidRequst(
-          'Переданы некорректные данные при добавлении лайка карточке'
-        )
+          'Переданы некорректные данные при добавлении лайка карточке',
+        ),
       );
     }
     return next(error);

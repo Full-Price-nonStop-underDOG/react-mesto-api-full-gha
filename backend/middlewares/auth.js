@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-  const { token: bearerToken } = req.cookies;
+  const { authorization: bearerToken } = req.headers;
+
   if (!bearerToken) {
     return res.status(401).send({ message: 'Необходима авторизация1' });
   }

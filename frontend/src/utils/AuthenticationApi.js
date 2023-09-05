@@ -14,7 +14,7 @@ class Api {
 
   async register(email, password) {
     try {
-      const response = await fetch(`${this._url}/sign-up`, {
+      const response = await fetch(`${this._url}/signup`, {
         method: 'POST',
         headers: this._headers,
 
@@ -40,9 +40,11 @@ class Api {
           password: password,
         }),
       });
+
       const data = await this._handlePromiseRequest(response);
-      if (data.token) {
+      if (data) {
         localStorage.setItem('jwt', data.token);
+
         return data;
       }
     } catch (error) {
@@ -56,7 +58,6 @@ class Api {
 
   async checkToken(token) {
     //const token = this.getToken(); // Получаем токен из localStorage
-
     try {
       const response = await fetch(`${this._url}/users/me`, {
         method: 'GET',

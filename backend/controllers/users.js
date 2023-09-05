@@ -8,6 +8,11 @@ const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
 
+module.exports.getToken = (req) => {
+  const { authorization: bearerToken } = req.headers;
+  const token = bearerToken.replace('Bearer ', '');
+  return token;
+};
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -27,7 +32,7 @@ module.exports.login = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     }); // 7 days
 
-    return res.json({ _id: user._id });
+    return res.json({ _id: user._id, token });
   } catch (error) {
     // Handle any other errors that might occur
     return next(error);
@@ -66,10 +71,10 @@ module.exports.getById = async (req, res, next) => {
 
 module.exports.getCurrentUser = async (req, res, next) => {
   try {
-    const { token } = req.cookies;
-    const payload = jwt.decode(token);
+    const payload = jwt.decode(this.getToken(req));
+
     // Fetch the current user information from req.user (provided by the auth middleware)
-    const currentUser = await User.findById(payload);
+    const currentUser = await User.findById(payload._id);
 
     if (!currentUser) {
       return next(new NoDataError('User not found'));
@@ -110,19 +115,19 @@ module.exports.getCurrentUser = async (req, res, next) => {
 // };
 
 module.exports.createUser = (req, res, next) => {
-  const {
-    email, password, name, about, avatar,
-  } = req.body;
+  const { email, password, name, about, avatar } = req.body;
 
   bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({
-      email,
-      password: hash,
-      name,
-      about,
-      avatar,
-    }))
+    .then((hash) =>
+      User.create({
+        email,
+        password: hash,
+        name,
+        about,
+        avatar,
+      })
+    )
     .then((user) => {
       const { _id } = user;
 
@@ -138,8 +143,8 @@ module.exports.createUser = (req, res, next) => {
       if (err.code === 11000) {
         next(
           new ServerConflictError(
-            'Пользователь с таким электронным адресом уже существует',
-          ),
+            'Пользователь с таким электронным адресом уже существует'
+          )
         );
       } else if (err.name === 'ValidationError') {
         // В случае ошибки валидации отправляем ошибку 400
@@ -154,13 +159,12 @@ module.exports.createUser = (req, res, next) => {
 module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
-  const { token } = req.cookies;
-  const payload = jwt.decode(token);
+  const payload = jwt.decode(this.getToken(req));
 
   User.findByIdAndUpdate(
-    payload,
+    payload._id,
     { name, about },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((updatedUser) => {
       if (!updatedUser) {
@@ -172,8 +176,8 @@ module.exports.updateProfile = (req, res, next) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при обновлении профиля',
-          ),
+            'Переданы некорректные данные при обновлении профиля'
+          )
         );
       }
       return next(error);
@@ -183,13 +187,12 @@ module.exports.updateProfile = (req, res, next) => {
 // PATCH /users/me/avatar — обновляет аватар
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  const { token } = req.cookies;
-  const payload = jwt.decode(token);
+  const payload = jwt.decode(this.getToken(req));
 
   return User.findByIdAndUpdate(
     payload,
     { avatar },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((updatedUser) => {
       if (updatedUser) {
@@ -201,8 +204,8 @@ module.exports.updateAvatar = (req, res, next) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при обновлении профиля',
-          ),
+            'Переданы некорректные данные при обновлении профиля'
+          )
         );
       }
       return next(error);
