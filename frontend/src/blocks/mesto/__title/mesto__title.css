@@ -1,7 +1,0 @@
-.mesto__title {
-    color: black;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 185px;
-}
