@@ -39,7 +39,7 @@ export const authenticationElemenetsApi = {
     'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
     Pragma: 'no-cache',
   },
-  URL: 'https://api.korvin.boy.nomoredomainsicu.ru',
+  URL: 'http://localhost:3001',
 };
 
 export const config = {
