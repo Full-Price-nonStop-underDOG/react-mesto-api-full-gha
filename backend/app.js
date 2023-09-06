@@ -145,5 +145,5 @@ app.use((err, req, res, next) => {
   logger.error('Error:', { error: err, stack: err.stack });
 
   // Отправляем ошибку клиенту
-  res.status(err.statusCode || 500).json({ err.message });
+  res.status(err.statusCode || 500).json({ message: err.message });
 });
