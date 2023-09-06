@@ -52,6 +52,15 @@ export function App() {
   }, [isLoggedIn]);
 
   useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  useEffect(() => {
     const checkTokensAndFetchData = async () => {
       const jwt = localStorage.getItem('jwt');
 

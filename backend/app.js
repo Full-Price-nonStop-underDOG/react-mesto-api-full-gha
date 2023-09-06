@@ -16,8 +16,7 @@ const { login, createUser } = require('./controllers/users');
 
 app.use(cookieParser());
 
-const urlRegex =
-  /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
+const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
 // app.use(
 //   cors({
@@ -37,7 +36,7 @@ app.use(
     origin: '*',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
-  })
+  }),
 );
 // app.use((req, res, next) => {
 //   res.header(
@@ -81,6 +80,12 @@ app.use((req, res, next) => {
 app.use(router);
 app.use(routerCards);
 
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 router.post(
   '/signin',
   celebrate({
@@ -89,7 +94,7 @@ router.post(
       password: Joi.string().required().min(6),
     }),
   }),
-  login
+  login,
 );
 
 router.post(
@@ -103,7 +108,7 @@ router.post(
       avatar: Joi.string().pattern(urlRegex),
     }),
   }),
-  createUser
+  createUser,
 );
 
 app.use(errors());
@@ -140,7 +145,7 @@ app.listen(3000, () => {});
 //   res.status(statusCode).json({ message });
 // });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   // Логируем ошибку
   logger.error('Error:', { error: err, stack: err.stack });
 
