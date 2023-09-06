@@ -1,0 +1,58 @@
+.form__button {
+    border: none;
+    margin: 0 auto 37px;
+    width: 358px;
+    height: 50px;
+    background-color: #000000;
+    border-radius: 2px;
+    color: #FFFFFF;
+    
+    font-family: 'Inter', 'Arial', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    padding: 0;
+    cursor: pointer;
+    
+    transition-duration: 0.3s;
+}
+
+@keyframes closing {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  .popup.closing {
+    animation: closing 0.3s;
+  }
+
+.form__button:hover{
+    opacity: .6;
+}
+
+.form__button_disabled{
+    cursor: default;
+    background-color: transparent;
+    border: 1px solid #000;
+    box-sizing: content-box;
+    color: #000;
+    opacity: .2;
+    pointer-events: none;
+}
+
+
+
+@media screen and (max-width:770px) {
+
+    .form__button {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 15px auto 25px;
+        max-width: 238px;
+    }
+}

@@ -1,0 +1,30 @@
+.header__logo {
+    margin-bottom: 36px;
+    
+    
+}
+
+.header__logo{
+    font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 18px;
+line-height: 22px;
+/* identical to box height, or 122% */
+
+text-align: right;
+
+color: #FFFFFF;
+}
+@media screen and (max-width: 660px) {
+
+    .header__logo {
+        width: 104px;
+        height: 24px;
+        margin-top: 5px;
+        margin-left: 27px;
+        margin-bottom: 27px;
+        margin: 5px 0 27px 27px;
+
+    }
+}
