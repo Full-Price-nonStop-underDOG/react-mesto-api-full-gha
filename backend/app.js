@@ -16,8 +16,7 @@ const { login, createUser } = require('./controllers/users');
 
 app.use(cookieParser());
 
-const urlRegex =
-  /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
+const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
 // app.use(
 //   cors({
@@ -37,7 +36,7 @@ app.use(
     origin: '*',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
-  })
+  }),
 );
 // app.use((req, res, next) => {
 //   res.header(
@@ -94,7 +93,7 @@ router.post(
       password: Joi.string().required().min(6),
     }),
   }),
-  login
+  login,
 );
 
 router.post(
@@ -108,7 +107,7 @@ router.post(
       avatar: Joi.string().pattern(urlRegex),
     }),
   }),
-  createUser
+  createUser,
 );
 
 app.use(errors());
@@ -131,10 +130,9 @@ app.use((err, req, res, next) => {
 // Обработка ошибок и отправка ответа
 app.use((err, req, res) => {
   const statusCode = err.statusCode || 500;
-  const message =
-    statusCode === 500
-      ? `На сервере произошла ошибка: ${err.message}`
-      : err.message;
+  const message = statusCode === 500
+    ? `На сервере произошла ошибка: ${err.message}`
+    : err.message;
 
   // Возвращаем объект с полем message
   res.status(statusCode).json({ message });

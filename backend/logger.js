@@ -4,10 +4,11 @@ const { createLogger, transports, format } = winston;
 const { combine, timestamp, printf } = format;
 
 // формат для вывода логов
-const logFormat = printf(({
-  timestamp, level, message, meta,
-}) => JSON.stringify({
-  timestamp, level, message, ...meta,
+const logFormat = printf(({ level, message, meta }) => JSON.stringify({
+  timestamp,
+  level,
+  message,
+  ...meta,
 }));
 
 // Создайте и настройте логгер
