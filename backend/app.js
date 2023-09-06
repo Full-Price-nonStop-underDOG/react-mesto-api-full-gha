@@ -117,7 +117,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-app.listen(3001, () => {});
+app.listen(3000, () => {});
 
 app.use((err, req, res, next) => {
   // Логируем ошибку

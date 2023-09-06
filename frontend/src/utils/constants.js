@@ -39,7 +39,7 @@ export const authenticationElemenetsApi = {
     'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
     Pragma: 'no-cache',
   },
-  URL: 'http://localhost:3001',
+  URL: 'http://localhost:3000',
 };
 
 export const config = {
