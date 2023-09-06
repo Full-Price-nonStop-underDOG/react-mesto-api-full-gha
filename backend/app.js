@@ -124,18 +124,5 @@ app.use((err, req, res, next) => {
   logger.error('Error:', { error: err, stack: err.stack });
 
   // Отправляем ошибку клиенту
-  res.status(500).json({ error: 'Internal Server Error' });
-  next(err);
-});
-
-// Обработка ошибок и отправка ответа
-app.use((err, req, res) => {
-  const statusCode = err.statusCode || 500;
-  const message =
-    statusCode === 500
-      ? `На сервере произошла ошибка: ${err.message}`
-      : err.message;
-
-  // Возвращаем объект с полем message
-  res.status(statusCode).json({ message });
+  res.status(err.statusCode || 500).json({ error: err.message });
 });
