@@ -6,7 +6,7 @@
 
 Пожалуйста, прикрепите в это описание ссылку на сайт, размещенный на Яндекс.Облаке.
 
-мАдрес репозитория: https://github.com/...
+мАдрес репозитория: https://github.com/Full-Price-nonStop-underDOG/react-mesto-api-full-gha
 
 ## Ссылки на проект
 
