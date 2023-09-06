@@ -10,7 +10,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.41.146
+IP 158.160.41.146
 
 Frontend http://korvin.boy.nomoredomainsicu.ru/sign-in
 
