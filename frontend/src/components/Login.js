@@ -1,15 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import AuthenticationForm from './AuthenticationForm';
 import { useNavigate } from 'react-router-dom';
 
 function Login(props) {
   const navigate = useNavigate();
+
   useEffect(() => {
     props.resetRegistrationStatus();
-  }, [props]);
+  }, []);
+
   async function handleSubmit(email, password) {
-    await props.onLogin(email, password);
-    navigate('/'); // Перенаправление на главную страницу
+    try {
+      await props.onLogin(email, password);
+      navigate('/'); // Перенаправление на главную страницу при успешном входе
+    } catch (error) {
+      // Обработка ошибки входа (например, показ сообщения об ошибке)
+      console.error('Ошибка входа:', error);
+    }
   }
 
   return (
