@@ -92,72 +92,72 @@ module.exports.getCurrentUser = async (req, res, next) => {
 };
 
 // POST /users - создаёт пользователя
-module.exports.createUser = async (req, res, next) => {
-  try {
-    const { name, about, avatar, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hashedPassword,
-    });
-
-    return res.status(201).json({ newUser });
-  } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return next(new InvalidRequst(error.message));
-    }
-    if (error.code === 11000) {
-      return next(
-        new ServerConflictError('Пользователь с таким email уже существует')
-      );
-    }
-    return next(error);
-  }
-};
-
-// module.exports.createUser = (req, res, next) => {
-//   const { email, password, name, about, avatar } = req.body;
-
-//   bcrypt
-//     .hash(password, 10)
-//     .then((hash) =>
-//       User.create({
-//         email,
-//         password: hash,
-//         name,
-//         about,
-//         avatar,
-//       })
-//     )
-//     .then((user) => {
-//       const { _id } = user;
-
-//       return res.status(201).send({
-//         email,
-//         name,
-//         about,
-//         avatar,
-//         _id,
-//       });
-//     })
-//     .catch((err) => {
-//       if (err.code === 11000) {
-//         next(
-//           new ServerConflictError(
-//             'Пользователь с таким электронным адресом уже существует'
-//           )
-//         );
-//       } else if (err.name === 'ValidationError') {
-//         // В случае ошибки валидации отправляем ошибку 400
-//         next(new InvalidRequst('Переданы некорректные данные при регистрации'));
-//       } else {
-//         next(err);
-//       }
+//  module.exports.createUser = async (req, res, next) => {
+//    try {
+//      const { name, about, avatar, email, password } = req.body;
+//      const hashedPassword = await bcrypt.hash(password, 10);
+//      const newUser = await User.create({
+//        name,
+//        about,
+//        avatar,
+//        email,
+//        password: hashedPassword,
 //     });
+
+//     return res.status(201).json({ newUser });
+//    } catch (error) {
+//     if (error.name === 'ValidationError' || error.name === 'CastError') {
+//       return next(new InvalidRequst(error.message));
+//      }
+//      if (error.code === 11000) {
+//        return next(
+//          new ServerConflictError('Пользователь с таким email уже существует')
+//        );
+//      }
+//     return next(error);
+//   }
 // };
+
+module.exports.createUser = (req, res, next) => {
+  const { email, password, name, about, avatar } = req.body;
+
+  bcrypt
+    .hash(password, 10)
+    .then((hash) =>
+      User.create({
+        email,
+        password: hash,
+        name,
+        about,
+        avatar,
+      })
+    )
+    .then((user) => {
+      const { _id } = user;
+
+      return res.status(201).send({
+        email,
+        name,
+        about,
+        avatar,
+        _id,
+      });
+    })
+    .catch((err) => {
+      if (err.code === 11000) {
+        next(
+          new ServerConflictError(
+            'Пользователь с таким электронным адресом уже существует'
+          )
+        );
+      } else if (err.name === 'ValidationError') {
+        // В случае ошибки валидации отправляем ошибку 400
+        next(new InvalidRequst('Переданы некорректные данные при регистрации'));
+      } else {
+        next(err);
+      }
+    });
+};
 
 // PATCH /users/me — обновляет профиль
 module.exports.updateProfile = (req, res, next) => {
