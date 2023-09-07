@@ -23,7 +23,7 @@ const logger = createLogger({
     new transports.File({
       filename: 'error.log',
       level: 'error',
-    }), // Логи ошибок
+    }), // Логи ошибокv
   ],
 });
 
