@@ -9,11 +9,14 @@ const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
 require('dotenv').config();
 
+const jwtSecret = process.env.JWT_SECRET || 'my_darling_is_over_the_ocean';
+
 module.exports.getToken = (req) => {
   const { authorization: bearerToken } = req.headers;
   const token = bearerToken.replace('Bearer ', '');
   return token;
 };
+
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -26,7 +29,7 @@ module.exports.login = async (req, res, next) => {
     }
 
     const payload = { _id: user._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const token = jwt.sign(payload, jwtSecret, {
       expiresIn: '7d',
     });
 
