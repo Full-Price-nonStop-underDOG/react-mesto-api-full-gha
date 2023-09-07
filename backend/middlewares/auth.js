@@ -12,8 +12,7 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    const jwtSecret = process.env.JWT_SECRET; // Получаем секретный ключ из переменных окружения
-    payload = jwt.verify(token, jwtSecret); // Используем секретный ключ из переменных окружения
+    payload = jwt.verify(token, 'your-secret-key');
   } catch (err) {
     return next(new TokenInvalidError('Необходима авторизация2'));
   }

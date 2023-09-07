@@ -7,9 +7,9 @@ const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
-require('dotenv').config();
+//require('dotenv').config();
 
-const jwtSecret = process.env.JWT_SECRET || 'my_darling_is_over_the_ocean';
+//const jwtSecret = process.env.JWT_SECRET || 'my_darling_is_over_the_ocean';
 
 module.exports.getToken = (req) => {
   const { authorization: bearerToken } = req.headers;
