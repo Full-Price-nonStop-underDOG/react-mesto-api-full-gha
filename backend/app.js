@@ -129,7 +129,7 @@ app.use((err, req, res, next) => {
 });
 
 // Обработка ошибок и отправка ответа
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message =
     statusCode === 500
