@@ -67,13 +67,13 @@ app.listen(3000, () => {});
 
 //   next();
 // });
-// app.use((req, res, next) => {
-//   // Логируем запрос
-//   logger.info(`Received a request to ${req.method} ${req.url}`, {
-//     user: req.user, // информация о пользователе
-//   });
-//   next();
-// });
+app.use((req, res, next) => {
+  // Логируем запрос
+  logger.info(`Received a request to ${req.method} ${req.url}`, {
+    user: req.user, // информация о пользователе
+  });
+  next();
+});
 
 app.use((req, res, next) => {
   if (req.url === '/signup' || req.url === '/signin') {
@@ -119,14 +119,14 @@ app.use('*', (req, res, next) => {
   next(err);
 });
 
-// app.use((err, req, res, next) => {
-//   // Логируем ошибку
-//   logger.error('Error:', { error: err, stack: err.stack });
+app.use((err, req, res, next) => {
+  // Логируем ошибку
+  logger.error('Error:', { error: err, stack: err.stack });
 
-//   // Отправляем ошибку клиенту
-//   //res.status(500).json({ error: 'Internal Server Error' });
-//   next(err);
-// });
+  // Отправляем ошибку клиенту
+  //res.status(500).json({ error: 'Internal Server Error' });
+  next(err);
+});
 
 // Обработка ошибок и отправка ответа
 app.use((err, req, res) => {
