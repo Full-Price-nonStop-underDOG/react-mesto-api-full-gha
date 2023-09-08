@@ -55,6 +55,18 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+  useNewUrlParser: true,
+});
+
+app.listen(3001, () => {});
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '64c1194f6128cbaa7041d519', //
+//   };
+
+//   next();
+// });
 app.use((req, res, next) => {
   // Логируем запрос
   logger.info(`Received a request to ${req.method} ${req.url}`, {
@@ -73,12 +85,6 @@ app.use((req, res, next) => {
 
 app.use(router);
 app.use(routerCards);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
 
 router.post(
   '/signin',
@@ -112,37 +118,24 @@ app.use('*', (req, res, next) => {
   err.statusCode = 404;
   next(err);
 });
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
-  useNewUrlParser: true,
-});
 
-app.listen(3000, () => {});
-
-// app.use((err, req, res, next) => {
-//   // Логируем ошибку
-//   logger.error('Error:', { error: err, stack: err.stack });
-
-//   // Отправляем ошибку клиенту
-//   res.status(500).json({ error: 'Internal Server Error' });
-//   next(err);
-// });
-
-// // Обработка ошибок и отправка ответа
-// app.use((err, req, res) => {
-//   const statusCode = err.statusCode || 500;
-//   const message =
-//     statusCode === 500
-//       ? `На сервере произошла ошибка: ${err.message}`
-//       : err.message;
-
-//   // Возвращаем объект с полем message
-//   res.status(statusCode).json({ message });
-// });
-
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   // Логируем ошибку
   logger.error('Error:', { error: err, stack: err.stack });
 
   // Отправляем ошибку клиенту
-  res.status(err.statusCode || 500).json({ message: err.message });
+  //res.status(500).json({ error: 'Internal Server Error' });
+  next(err);
+});
+
+// Обработка ошибок и отправка ответа
+app.use((err, req, res) => {
+  const statusCode = err.statusCode || 500;
+  const message =
+    statusCode === 500
+      ? `На сервере произошла ошибка: ${err.message}`
+      : err.message;
+
+  // Возвращаем объект с полем message
+  res.status(statusCode).json({ message });
 });

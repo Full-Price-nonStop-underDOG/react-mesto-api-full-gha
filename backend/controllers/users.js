@@ -7,9 +7,9 @@ const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
-//require('dotenv').config();
+require('dotenv').config();
 
-//const jwtSecret = process.env.JWT_SECRET || 'my_darling_is_over_the_ocean';
+const jwtSecret = process.env.JWT_SECRET || 'my_darling_is_over_the_ocean';
 
 module.exports.getToken = (req) => {
   const { authorization: bearerToken } = req.headers;
@@ -29,7 +29,9 @@ module.exports.login = async (req, res, next) => {
     }
 
     const payload = { _id: user._id };
-    const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '7d' });
+    const token = jwt.sign(payload, jwtSecret, {
+      expiresIn: '7d',
+    });
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -92,28 +94,28 @@ module.exports.getCurrentUser = async (req, res, next) => {
 };
 
 // POST /users - создаёт пользователя
-//  module.exports.createUser = async (req, res, next) => {
-//    try {
-//      const { name, about, avatar, email, password } = req.body;
-//      const hashedPassword = await bcrypt.hash(password, 10);
-//      const newUser = await User.create({
-//        name,
-//        about,
-//        avatar,
-//        email,
-//        password: hashedPassword,
+// module.exports.createUser = async (req, res, next) => {
+//   try {
+//     const { name, about, avatar, email, password } = req.body;
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const newUser = await User.create({
+//       name,
+//       about,
+//       avatar,
+//       email,
+//       password: hashedPassword,
 //     });
 
 //     return res.status(201).json({ newUser });
-//    } catch (error) {
+//   } catch (error) {
 //     if (error.name === 'ValidationError' || error.name === 'CastError') {
 //       return next(new InvalidRequst(error.message));
-//      }
-//      if (error.code === 11000) {
-//        return next(
-//          new ServerConflictError('Пользователь с таким email уже существует')
-//        );
-//      }
+//     }
+//     if (error.code === 11000) {
+//       return next(
+//         new ServerConflictError('Пользователь с таким email уже существует')
+//       );
+//     }
 //     return next(error);
 //   }
 // };
