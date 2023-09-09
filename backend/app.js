@@ -127,7 +127,7 @@ app.use('*', (req, res, next) => {
 
 app.use((err, req, res, next) => {
   // Логируем ошибку
-  logger.error('Error:', { error: err, stack: err.stack });
+  logger.error(`Error: ${err.message}`, { stack: err.stack });
 
   // Отправляем ошибку клиенту
   const statusCode = err.statusCode || 500;
