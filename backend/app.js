@@ -67,6 +67,12 @@ app.listen(3000, () => {});
 
 //   next();
 // });
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 app.use((req, res, next) => {
   // Логируем запрос
   logger.info(`Received a request to ${req.method} ${req.url}`, {
