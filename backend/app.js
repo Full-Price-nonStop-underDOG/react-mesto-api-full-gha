@@ -16,8 +16,7 @@ const { login, createUser } = require('./controllers/users');
 
 app.use(cookieParser());
 
-const urlRegex =
-  /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
+const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
 // app.use(
 //   cors({
@@ -37,7 +36,7 @@ app.use(
     origin: '*',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
-  })
+  }),
 );
 // app.use((req, res, next) => {
 //   res.header(
@@ -75,9 +74,9 @@ app.get('/crash-test', () => {
 
 app.use((req, res, next) => {
   if (
-    req.url === '/signup' ||
-    req.url === '/signin' ||
-    req.url === '/crash-test'
+    req.url === '/signup'
+    || req.url === '/signin'
+    || req.url === '/crash-test'
   ) {
     next(); // Skip auth for signup and signin
   } else {
@@ -102,7 +101,7 @@ router.post(
       password: Joi.string().required().min(6),
     }),
   }),
-  login
+  login,
 );
 
 router.post(
@@ -116,7 +115,7 @@ router.post(
       avatar: Joi.string().pattern(urlRegex),
     }),
   }),
-  createUser
+  createUser,
 );
 app.use(errorLogger);
 app.use(errors());
@@ -128,14 +127,14 @@ app.use('*', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  // мне преподаватель Борис Зашляпин сказал, что тут оставить next обязательно поэтому эта ошибка в линтере должна остаться!
+  // мне преподаватель Борис Зашляпин сказал, что тут оставить
+  // next обязательно поэтому эта ошибка в линтере должна остаться!
   // https://korvin.boy.nomoredomainsicu.ru/crash-test а роуд краш теста тоже работает корректно
   // Отправляем ошибку клиенту
   const statusCode = err.statusCode || 500;
-  const message =
-    statusCode === 500
-      ? `На сервере произошла ошибка: ${err.message}`
-      : err.message;
+  const message = statusCode === 500
+    ? `На сервере произошла ошибка: ${err.message}`
+    : err.message;
 
   res.status(statusCode).json({ message });
 });
