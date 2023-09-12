@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
-const logger = require('./logger');
+const { requestLogger, errorLogger } = require('./logger');
 
 const app = express();
 
@@ -74,21 +74,13 @@ app.get('/crash-test', () => {
 });
 
 app.use((req, res, next) => {
-  // Логируем запрос
-  logger.info(`Received a request to ${req.method} ${req.url}`, {
-    user: req.user, // информация о пользователе
-  });
-  next();
-});
-
-app.use((req, res, next) => {
   if (req.url === '/signup' || req.url === '/signin') {
     next(); // Skip auth for signup and signin
   } else {
     authMiddleware(req, res, next); // Apply authMiddleware for other routes
   }
 });
-
+app.use(requestLogger);
 app.use(router);
 app.use(routerCards);
 
@@ -116,7 +108,7 @@ router.post(
   }),
   createUser
 );
-
+app.use(errorLogger);
 app.use(errors());
 
 app.use('*', (req, res, next) => {
@@ -127,7 +119,6 @@ app.use('*', (req, res, next) => {
 
 app.use((err, req, res, next) => {
   // Логируем ошибку
-  logger.error(`Error: ${err.message}`, { stack: err });
 
   // Отправляем ошибку клиенту
   const statusCode = err.statusCode || 500;

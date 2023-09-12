@@ -1,30 +1,17 @@
 const winston = require('winston');
+const expressWinston = require('express-winston');
 
-const { createLogger, transports, format } = winston;
-const { combine, timestamp, printf } = format;
-
-// формат для вывода логов
-const logFormat = printf(({ level, message, meta }) =>
-  JSON.stringify({
-    timestamp,
-    level,
-    message,
-    ...meta,
-  })
-);
-
-// Создайте и настройте логгер
-const logger = createLogger({
-  level: 'info',
-  format: combine(timestamp(), logFormat), // Формат логов
-  transports: [
-    new transports.Console(), // Логи в консоль
-    new transports.File({ filename: 'request.log', level: 'info' }), // Логи запросов
-    new transports.File({
-      filename: 'error.log',
-      level: 'error',
-    }), // Логи ошибокv
-  ],
+const requestLogger = expressWinston.logger({
+  transports: [new winston.transports.File({ filename: 'request.log' })],
+  format: winston.format.json(),
 });
 
-module.exports = logger;
+const errorLogger = expressWinston.errorLogger({
+  transports: [new winston.transports.File({ filename: 'error.log' })],
+  format: winston.format.json(),
+});
+
+module.exports = {
+  requestLogger,
+  errorLogger,
+};
