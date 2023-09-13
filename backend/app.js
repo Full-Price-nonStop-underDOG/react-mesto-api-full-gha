@@ -11,6 +11,7 @@ const app = express();
 const router = require('./routes/users');
 const routerCards = require('./routes/cards');
 const authMiddleware = require('./middlewares/auth');
+const NoDataError = require('./errors/noDataError');
 
 const { login, createUser } = require('./controllers/users');
 
@@ -87,12 +88,7 @@ app.use(requestLogger);
 app.use(router);
 app.use(routerCards);
 
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
-
+router.use((req, res, next) => next(new NoDataError('Страницы по запрошенному URL не существует')));
 router.post(
   '/signin',
   celebrate({
@@ -129,7 +125,8 @@ app.use('*', (req, res, next) => {
 app.use((err, req, res, next) => {
   // мне преподаватель Борис Зашляпин сказал, что тут оставить
   // next обязательно поэтому эта ошибка в линтере должна остаться!
-  // https://korvin.boy.nomoredomainsicu.ru/crash-test а роуд краш теста тоже работает корректно
+  // ошибка с востановлением сервера была у меня в nginx на виртуальной машине,
+  // поэтому коммитить в проекте ничего не пришлось
   // Отправляем ошибку клиенту
   const statusCode = err.statusCode || 500;
   const message = statusCode === 500
