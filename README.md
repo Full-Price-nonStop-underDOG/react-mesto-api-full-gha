@@ -1,4 +1,4 @@
-[![Статус тестов](../../actions/workflows/tests.yml/badge.svg)](../../actions/workflows/tests.yml)
+
 
 # react-mesto-api-full
 
@@ -8,10 +8,3 @@
 
 Адрес репозитория: (https://github.com/Full-Price-nonStop-underDOG/react-mesto-api-full-gha)
 
-## Ссылки на проект
-
-IP 158.160.41.146
-
-Frontend http://korvin.boy.nomoredomainsicu.ru/sign-in
-
-Backend https://api.korvin.boy.nomoredomainsicu.ru
