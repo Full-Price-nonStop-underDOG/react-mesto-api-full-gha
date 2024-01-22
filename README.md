@@ -1,9 +1,8 @@
-Project Summary: Mesto - React Frontend & Express.js Backend Integration
+Project Summary: Mesto - Integration of React Frontend & Express.js Backend
 
 Frontend Accomplishments:
 
-Overview:
-Led the advancement of the Mesto project, transforming it into an interactive platform for seamless photo management, including uploads, deletions, and likes. Key focuses included implementing robust form validation and optimizing the user experience through enhanced popups. Concluded with a streamlined project build configuration using Webpack.
+Overview: Spearheaded the advancement of the Mesto project, transforming it into an interactive platform for seamless photo management, encompassing uploads, deletions, and likes. Key focuses included implementing robust form validation and optimizing the user experience through enhanced popups. The project concluded with a streamlined build configuration using Webpack.
 
 Key Contributions:
 
@@ -12,11 +11,9 @@ Elevated user experience by refining popup interactions, ensuring a smooth and u
 Executed the conversion of HTML to JSX, seamlessly integrating with React components for a dynamic frontend.
 Implemented user registration and authentication processes, establishing secure communication with two APIs.
 Utilized React Context to efficiently manage and provide access to user data across various components.
-
 Backend Achievements:
 
-Overview:
-Built a resilient backend for the Mesto application using Express.js and MongoDB, incorporating ESLint for elevated code quality. The backend features a centralized error handler, request and error logging, and automatic recovery mechanisms in case of server failures.
+Overview: Constructed a resilient backend for the Mesto application using Express.js and MongoDB, incorporating ESLint for elevated code quality. The backend features a centralized error handler, request and error logging, and automatic recovery mechanisms in case of server failures.
 
 Key Contributions:
 
@@ -36,6 +33,4 @@ Configured Webpack for an efficient and streamlined project build process.
 Acquired and configured SSL certificates, ensuring secure communication within the application.
 Attached a custom domain for a professional and branded user experience.
 Implemented robust strategies to handle potential server crashes, ensuring continuous application availability.
-
-Technologies Utilized:
-React, Express.js, MongoDB, ESLint, Webpack, SSL Certificates, Continuous Integration
+Technologies Utilized: React, Express.js, MongoDB, ESLint, Webpack, SSL Certificates, Continuous Integration
